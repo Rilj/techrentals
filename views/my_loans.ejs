@@ -1,0 +1,21 @@
+
+<h3>Barang Yang Saya Pinjam</h3>
+
+<table class="">
+    <% loans.forEach(loan => { %>
+        <tr>
+            <td><%= loan.Item.nama_barang %></td>
+            <td><%= loan.Item.kode_unit %></td>
+            <td><%= loan.status %></td>
+            <td>
+                <% if(loan.status === 'borrowed') { %>
+                    <form action="/return-request/<%= loan.id %>" method="POST">
+                        <button class="btn btn-warning btn-sm">
+                            Ajukan Pengembalian
+                        </button>
+                    </form>
+                <% } %>
+            </td>
+        </tr>
+    <% }) %>
+</table>

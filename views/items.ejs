@@ -1,0 +1,73 @@
+<style>
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+        margin-top: 30px;
+    }
+    .item-card {
+        background: var(--dark-bg);
+        border: 3px solid var(--primary-red);
+        border-radius: 20px;
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.3s;
+    }
+    .item-card:hover { transform: translateY(-5px); }
+    .item-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 15px;
+        margin-bottom: 15px;
+    }
+    .badge {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+    }
+    .bg-success { background: #28a745; }
+    .bg-warning { background: #ffc107; color: black; }
+    .bg-danger { background: #dc3545; }
+    
+    .btn-pinjam {
+        background: transparent;
+        border: 2px solid var(--primary-red);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 10px;
+        margin-top: 15px;
+        cursor: pointer;
+        width: 100%;
+    }
+    .btn-pinjam:disabled { border-color: #555; color: #555; }
+</style>
+
+<h2>Daftar Barang</h2>
+<div class="grid-container">
+    <% items.forEach(item => { %>
+        <div class="item-card">
+            <% if(item.image) { %>
+                <img src="/uploads/<%= item.image %>" alt="item">
+            <% } %>
+            <h4><%= item.nama_barang %></h4>
+            <p><small><%= item.kode_unit %></small></p>
+            
+            <div style="margin: 15px 0;">
+                <% if(item.status === 'tersedia') { %>
+                    <span class="badge bg-success">Tersedia</span>
+                <% } else { %>
+                    <span class="badge bg-danger">Dipinjam</span>
+                <% } %>
+            </div>
+
+            <% if(item.status === 'tersedia') { %>
+                <form action="/loan/<%= item.kode_unit %>" method="POST">
+                    <button class="btn-pinjam">Request Pinjam</button>
+                </form>
+            <% } else { %>
+                <button class="btn-pinjam" disabled>Tidak Tersedia</button>
+            <% } %>
+        </div>
+    <% }) %>
+</div>

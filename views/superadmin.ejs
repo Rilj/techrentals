@@ -1,0 +1,132 @@
+<style>
+    .super-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    /* Style khusus untuk upload file */
+    .custom-file-upload {
+        border: 2px dashed var(--primary);
+        padding: 20px;
+        text-align: center;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        background: #0f0f0f;
+    }
+    .custom-file-upload:hover { background: #1a0000; }
+
+    .item-list-mini {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    .list-item-row {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #222;
+        gap: 15px;
+    }
+    .list-item-row img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; }
+    .list-item-row .info { flex: 1; }
+    .list-item-row .info h5 { margin: 0; font-size: 1rem; }
+    .list-item-row .info p { margin: 0; font-size: 0.8rem; color: #777; }
+</style>
+
+<div class="dashboard-header">
+    <h1 style="color: var(--primary);">Superadmin Command Center</h1>
+    <p>Otoritas penuh untuk manajemen Admin dan Inventaris Barang.</p>
+</div>
+
+<div class="super-grid">
+    <div class="card">
+        <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px;">📦 Management Inventaris</h3>
+        <form action="/admin/add" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>NAMA BARANG</label>
+                <input type="text" name="nama_barang" placeholder="Masukkan nama barang..." required>
+            </div>
+            <div class="form-group">
+                <label>JUMLAH UNIT</label>
+                <input type="number" name="jumlah" min="1" value="1" required>
+            </div>
+            <label style="font-size: 0.8rem; color: #ccc;">FOTO BARANG</label>
+            <div class="custom-file-upload" onclick="document.getElementById('image').click()">
+                <span id="file-name">Klik untuk pilih gambar (JPG/PNG)</span>
+                <input type="file" id="image" name="image" accept="image/*" style="display: none;" onchange="updateFileName(this)">
+            </div>
+            <button type="submit" class="logout-btn" style="width: 100%; border: none;">+ Simpan ke Gudang</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px;">🛡️ Registrasi Admin</h3>
+        <form method="POST" action="/superadmin/add-admin">
+            <div class="form-group">
+                <label>NAMA LENGKAP</label>
+                <input type="text" name="name" placeholder="Nama admin baru" required>
+            </div>
+            <div class="form-group">
+                <label>EMAIL OPERASIONAL</label>
+                <input type="email" name="email" placeholder="admin@sarpratech.com" required>
+            </div>
+            <div class="form-group">
+                <label>ACCESS PASSWORD</label>
+                <input type="password" name="password" placeholder="Min. 8 karakter" required>
+            </div>
+            <button class="btn-approve" style="width: 100%; padding: 12px; font-size: 1rem;">Aktifkan Akun Admin</button>
+        </form>
+    </div>
+</div>
+
+<div class="super-grid">
+    <div class="card">
+        <h3 style="color: var(--primary);">Daftar Admin Aktif</h3>
+        <div class="item-list-mini">
+            <% admins.forEach(admin => { %>
+                <div class="list-item-row">
+                    <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                        <%= admin.name.charAt(0).toUpperCase() %>
+                    </div>
+                    <div class="info">
+                        <h5><%= admin.name %></h5>
+                        <p><%= admin.email %></p>
+                    </div>
+                    <span class="status-text" style="color: #28a745;">ACTIVE</span>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Inventaris Saat Ini</h3>
+        <div class="item-list-mini">
+            <% items.forEach(item => { %>
+                <div class="list-item-row">
+                    <% if(item.image) { %>
+                        <img src="/uploads/<%= item.image %>">
+                    <% } else { %>
+                        <div style="width: 50px; height: 50px; background: #333; border-radius: 8px;"></div>
+                    <% } %>
+                    <div class="info">
+                        <h5><%= item.nama_barang %></h5>
+                        <p>ID: <%= item.kode_unit %></p>
+                    </div>
+                    <span class="status-text" style="color: <%= item.status === 'tersedia' ? '#28a745' : '#dc3545' %>">
+                        <%= item.status.toUpperCase() %>
+                    </span>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateFileName(input) {
+        const fileName = input.files[0] ? input.files[0].name : "Klik untuk pilih gambar (JPG/PNG)";
+        document.getElementById('file-name').innerText = fileName;
+    }
+</script>

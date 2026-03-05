@@ -1,0 +1,70 @@
+<style>
+    h3{
+        margin-left: 2%;
+        font-size: 2vw;
+    }
+    p{
+      font-size: 1vw;
+      margin-left: 2%;
+    }
+    .btn{
+      margin-left: 2%;
+      padding: 0.4%;
+      background: #000000;
+      border: #ffffff 0.1em solid;
+      color: #ffffff;
+      border-radius: 10px;
+      text-decoration: none;
+    }
+</style>
+<h3>Dashboard</h3>
+
+<p>Selamat datang, <b><%= user.name %></b>. ada yang mau dipinjam?</p>
+
+<a class="btn"href="/items" class="btn btn-primary">Lihat Barang yang mau dipinjam</a>
+
+<% if(user.role === 'superadmin'){ %>
+  <a class="btn" href="/superadmin" class="btn btn-dark">Dashboard Superadmin</a>
+<% } %>
+
+<% if(user.role === 'admin'){ %>
+  <a class="btn" href="/admin/dashboard" class="btn btn-dark">Dashboard admin</a>
+<% } %>
+
+<% if(user.role === 'user'){ %>
+  
+<h3>Barang yang Sedang Dipinjam</h3>
+
+<table class="tabel table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Nama Barang</th>
+            <th>Tanggal Pinjam</th>
+            <th>Tagihan</th>
+            <th>Total Biaya</th>
+        </tr>
+    </thead>
+    <tbody>
+    <% loans.forEach(loan => { %>
+    <tr >
+        <td><%= loan.Item.nama_barang %></td>
+        <td><%= loan.days %> hari</td>
+        <td>Rp <%= loan.total.toLocaleString() %></td>
+        <td>
+        <% if(loan.status === 'borrowed') { %>
+            <form action="/loan/return/<%= loan.id %>" method="POST">
+                <button class="btn btn-warning btn-sm">
+                    Request Pengembalian
+                </button>
+            </form>
+        <% } else if(loan.status === 'return_requested') { %>
+            <span class="badge bg-info">
+                Menunggu Konfirmasi Admin
+            </span>
+        <% } %>
+    </td>
+    </tr>
+    <% }) %>
+    </tbody>
+</table>
+<% } %>
