@@ -431,6 +431,169 @@
         .animate-in {
             animation: fadeIn 0.6s ease forwards;
         }
+
+        /* Notification Popup Styles */
+        .notification-container {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            pointer-events: none;
+        }
+
+        .notification {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            min-width: 320px;
+            max-width: 400px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            transform: translateX(120%);
+            opacity: 0;
+            animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            pointer-events: auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notification::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+        }
+
+        .notification.success {
+            border-color: rgba(0, 208, 132, 0.3);
+        }
+
+        .notification.success::before {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        .notification.error {
+            border-color: rgba(255, 71, 87, 0.3);
+        }
+
+        .notification.error::before {
+            background: var(--danger);
+            box-shadow: 0 0 10px var(--danger);
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .notification.success .notification-icon {
+            background: rgba(0, 208, 132, 0.15);
+            color: var(--success);
+        }
+
+        .notification.error .notification-icon {
+            background: rgba(255, 71, 87, 0.15);
+            color: var(--danger);
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .notification-message {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .notification-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: var(--success);
+            border-radius: 0 0 0 12px;
+            animation: progress 5s linear forwards;
+        }
+
+        .notification.error .notification-progress {
+            background: var(--danger);
+        }
+
+        @keyframes slideIn {
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            to {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes progress {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .notification-container {
+                top: 80px;
+                right: 10px;
+                left: 10px;
+            }
+            
+            .notification {
+                min-width: unset;
+                max-width: unset;
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -472,5 +635,65 @@
             <feGaussianBlur in="displaced" stdDeviation="4" result="blur" />
         </filter>
     </svg>
+    <!-- Notification Container -->
+    <!-- Notification Container -->
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <script>
+    function showNotification(type, title, message, duration = 5000) {
+        const container = document.getElementById('notificationContainer');
+        
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        
+        const icon = type === 'success' ? '✓' : '✕';
+        
+        notification.innerHTML = `
+            <div class="notification-icon">${icon}</div>
+            <div class="notification-content">
+                <div class="notification-title">${title}</div>
+                <div class="notification-message">${message}</div>
+            </div>
+            <button class="notification-close" onclick="closeNotification(this)">✕</button>
+            <div class="notification-progress"></div>
+        `;
+        
+        container.appendChild(notification);
+        
+        setTimeout(() => {
+            closeNotification(notification.querySelector('.notification-close'));
+        }, duration);
+    }
+
+    function closeNotification(closeBtn) {
+        const notification = closeBtn.closest('.notification');
+        notification.style.animation = 'slideOut 0.3s ease forwards';
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const success = urlParams.get('success');
+        const error = urlParams.get('error');
+        const message = urlParams.get('message');
+        
+        if (success) {
+            showNotification('success', 'Berhasil!', decodeURIComponent(success));
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+        
+        if (error) {
+            showNotification('error', 'Gagal!', decodeURIComponent(error));
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+        
+        if (message) {
+            showNotification('success', 'Info', decodeURIComponent(message));
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    });
+    </script>
 </body>
 </html>

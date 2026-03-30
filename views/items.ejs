@@ -150,7 +150,7 @@
 </div>
 
 <div class="items-grid" id="itemsGrid">
-    <% items.forEach(item => { %>
+    <% items.filter(i => i.status === 'tersedia').forEach(item => { %>
         <div class="item-card animate-in" data-name="<%= item.nama_barang.toLowerCase() %>">
             <div class="item-image">
                 <% if(item.image) { %>
@@ -158,13 +158,13 @@
                 <% } else { %>
                     <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); display: flex; align-items: center; justify-content: center; color: #444; font-size: 3rem;">📦</div>
                 <% } %>
-                <div class="item-status">
+                <!-- <div class="item-status">
                     <% if(item.status === 'tersedia') { %>
                         <span class="badge badge-success">Tersedia</span>
                     <% } else { %>
                         <span class="badge badge-danger">Dipinjam</span>
                     <% } %>
-                </div>
+                </div> -->
             </div>
             <div class="item-content">
                 <h4><%= item.nama_barang %></h4>

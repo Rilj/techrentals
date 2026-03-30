@@ -2,27 +2,30 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const Loan = sequelize.define('Loan', {
-
   startDate: {
     type: DataTypes.DATE,
     allowNull: true
   },
-
   endDate: {
     type: DataTypes.DATE,
     allowNull: true
   },
-
   totalPrice: {
     type: DataTypes.INTEGER,
     defaultValue: 0
   },
-
   fine: {
     type: DataTypes.INTEGER,
     defaultValue: 0
   },
-
+  fineType: {  // ✅ Tambah: jenis denda
+    type: DataTypes.ENUM('none', 'late', 'damaged', 'lost'),
+    defaultValue: 'none'
+  },
+  fineDescription: {  // ✅ Tambah: keterangan denda
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   status: {
     type: DataTypes.ENUM(
       'pending',
@@ -33,7 +36,6 @@ const Loan = sequelize.define('Loan', {
     ),
     defaultValue: 'pending'
   }
-
 });
 
 module.exports = Loan;

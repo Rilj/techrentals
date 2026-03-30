@@ -15,7 +15,7 @@ const Item = sequelize.define('Item', {
     type: DataTypes.STRING
   },
   status: {
-    type: DataTypes.ENUM('tersedia','dibooking','dipinjam'),
+    type: DataTypes.ENUM('tersedia','dibooking','dipinjam','hilang'),
     defaultValue: 'tersedia'
   }
 });

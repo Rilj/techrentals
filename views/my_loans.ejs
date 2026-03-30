@@ -92,7 +92,7 @@
             <div class="loan-details">
                 <h4><%= loan.Item.nama_barang %></h4>
                 <div class="loan-meta">
-                    <span>📅 <%= loan.days %> hari</span>
+                    <span></span>
                     <span>🏷️ <%= loan.Item.kode_unit %></span>
                     <span>
                         <% if(loan.status === 'borrowed') { %>
@@ -113,7 +113,7 @@
             </div>
             <div class="loan-actions">
                 <div class="loan-price">
-                    Rp <%= (loan.total || 0).toLocaleString('id-ID') %>
+                    Rp <%= loan.totalPrice %>
                 </div>
 
                 <% if(loan.status === 'borrowed') { %>
@@ -121,7 +121,7 @@
                         <button class="btn btn-secondary">Ajukan Pengembalian</button>
                     </form>
                 <% } else { %>
-                    <span style="color: var(--text-secondary); font-size: 0.9rem;">Menunggu konfirmasi admin</span>
+                    <span style="color: var(--text-secondary); font-size: 0.9rem;"></span>
                 <% } %>
             </div>
         </div>
