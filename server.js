@@ -168,6 +168,7 @@ app.get('/admin/dashboard', isAdmin, async (req,res)=>{
 
 
 
+// Route: /admin/add-user (untuk admin menambah user biasa)
 app.post('/admin/add-user', isAdmin, async (req, res) => {
   try {
     // ✅ Destructure SEMUA field
