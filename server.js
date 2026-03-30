@@ -115,26 +115,35 @@ app.get('/superadmin', isSuperAdmin, async (req,res)=>{
   });
 });
 
-app.post('/superadmin/add-admin', isSuperAdmin, async (req,res)=>{
+app.post('/superadmin/add-admin', isSuperAdmin, async (req, res) => {
   try {
-    const { username, password } = req.body;
+    // ✅ Destructure SEMUA field dari form
+    const { name, email, password } = req.body;
+
+    // ✅ Validasi
+    if (!name || !email || !password) {
+      return res.send("Semua field wajib diisi!");
+    }
+
+    // ✅ Hash password (WAJIB!)
+    const bcrypt = require('bcryptjs');
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     await User.create({
-      username,
-      password,
+      name,
+      email,
+      password: hashedPassword,  // ✅ Simpan yang sudah di-hash
       role: 'admin'
     });
 
     res.redirect('/superadmin');
 
   } catch (error) {
-
     if (error.name === 'SequelizeUniqueConstraintError') {
-      return res.send("Username sudah digunakan, silakan pilih username lain.");
+      return res.send("Email sudah digunakan, silakan gunakan email lain.");
     }
-
     console.error(error);
-    res.send("Terjadi kesalahan saat menambahkan admin.");
+    res.send("Terjadi kesalahan saat menambahkan admin: " + error.message);
   }
 });
 
