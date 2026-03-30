@@ -297,7 +297,12 @@
         </div>
         <div class="list-container">
             <% if(admins.length > 0) { %>
-                <% admins.forEach(admin => { %>
+                <% admins.forEach(admin => { 
+                // Fallback untuk null values
+                const displayName = admin.name || admin.username || 'Unknown Admin';
+                const initial = displayName.charAt(0).toUpperCase();
+                const email = admin.email || 'No email';
+            %>
                 <div class="list-item">
                     <div class="item-icon"><%= admin.name.charAt(0).toUpperCase() %></div>
                     <div class="list-info">

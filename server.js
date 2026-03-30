@@ -168,24 +168,35 @@ app.get('/admin/dashboard', isAdmin, async (req,res)=>{
 
 
 
-app.post('/admin/add-user', isAdmin, async (req,res)=>{
+app.post('/admin/add-user', isAdmin, async (req, res) => {
   try {
-    const { username, password, role } = req.body;
+    // ✅ Destructure SEMUA field
+    const { name, email, password } = req.body;
 
-    console.log(req.body); // lihat data masuk
+    // Validasi
+    if (!name || !email || !password) {
+      return res.send("Semua field wajib diisi!");
+    }
+
+    // Hash password
+    const bcrypt = require('bcryptjs');
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     await User.create({
-      username,
-      password,
-      role
+      name,
+      email,
+      password: hashedPassword,
+      role: 'user'  // ✅ Role default 'user'
     });
 
     res.redirect('/admin/dashboard');
 
   } catch (error) {
-    console.error("ERROR DETAIL:");
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      return res.send("Email sudah digunakan!");
+    }
     console.error(error);
-    res.send(error.message);
+    res.send("Error: " + error.message);
   }
 });
 
