@@ -47,6 +47,44 @@ multer (file upload)
 cors
 dotenv
 
+structure:
+```
+sistem-peminjaman/
+├── config/           # Database & app configuration
+│   └── database.js
+├── middleware/         # Auth, roles, upload
+│   ├── authMiddleware.js
+│   ├── roleMiddleware.js
+│   └── uploadMiddleware.js
+├── models/             # Sequelize models
+│   ├── User.js
+│   ├── Item.js
+│   └── Loan.js
+├── public/             # Static assets
+│   ├── css/
+│   ├── js/
+│   └── uploads/
+├── routes/             # Route definitions
+│   ├── authRoutes.js
+│   ├── itemRoutes.js
+│   ├── loanRoutes.js
+│   └── adminRoutes.js
+├── views/              # EJS templates
+│   ├── layout.ejs
+│   ├── login.ejs
+│   ├── dashboard.ejs
+│   ├── admin_dashboard.ejs
+│   ├── superadmin.ejs
+│   ├── items.ejs
+│   ├── my_loans.ejs
+│   └── partials/
+├── .env                # Environment variables
+├── .gitignore
+├── package.json
+├── package-lock.json
+├── README.md
+└── server.js           # Entry point
+```
 ⚙️ Installation
 1️⃣ Clone Repository
 ```
