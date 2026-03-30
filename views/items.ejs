@@ -1,73 +1,204 @@
 <style>
-    .grid-container {
+    .catalog-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .catalog-header h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+    }
+
+    .search-box {
+        position: relative;
+        width: 300px;
+    }
+
+    .search-box input {
+        width: 100%;
+        padding: 12px 16px 12px 44px;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        color: var(--text-primary);
+        font-size: 0.9rem;
+    }
+
+    .search-box::before {
+        content: '🔍';
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .items-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 25px;
-        margin-top: 30px;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 24px;
     }
+
     .item-card {
-        background: var(--dark-bg);
-        border: 3px solid var(--primary-red);
+        background: var(--card-bg);
+        border: 1px solid var(--border);
         border-radius: 20px;
-        padding: 20px;
-        text-align: center;
-        transition: transform 0.3s;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        position: relative;
     }
-    .item-card:hover { transform: translateY(-5px); }
-    .item-card img {
+
+    .item-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(255, 0, 0, 0.3);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .item-image {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .item-image img {
         width: 100%;
-        height: 180px;
+        height: 100%;
         object-fit: cover;
-        border-radius: 15px;
-        margin-bottom: 15px;
+        transition: transform 0.3s ease;
     }
-    .badge {
-        padding: 5px 12px;
-        border-radius: 20px;
+
+    .item-card:hover .item-image img {
+        transform: scale(1.05);
+    }
+
+    .item-status {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+    }
+
+    .item-content {
+        padding: 20px;
+    }
+
+    .item-content h4 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .item-code {
+        color: var(--text-secondary);
         font-size: 0.8rem;
+        font-family: monospace;
+        margin-bottom: 16px;
     }
-    .bg-success { background: #28a745; }
-    .bg-warning { background: #ffc107; color: black; }
-    .bg-danger { background: #dc3545; }
-    
-    .btn-pinjam {
-        background: transparent;
-        border: 2px solid var(--primary-red);
-        color: white;
-        padding: 10px 20px;
+
+    .item-footer {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn-borrow {
+        flex: 1;
+        padding: 12px;
+        background: var(--gradient-red);
+        border: none;
         border-radius: 10px;
-        margin-top: 15px;
+        color: white;
+        font-weight: 600;
         cursor: pointer;
-        width: 100%;
+        transition: all 0.3s ease;
     }
-    .btn-pinjam:disabled { border-color: #555; color: #555; }
+
+    .btn-borrow:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+    }
+
+    .btn-borrow:disabled {
+        background: #333;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    @media (max-width: 768px) {
+        .catalog-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .search-box {
+            width: 100%;
+        }
+        
+        .items-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 
-<h2>Daftar Barang</h2>
-<div class="grid-container">
-    <% items.forEach(item => { %>
-        <div class="item-card">
-            <% if(item.image) { %>
-                <img src="/uploads/<%= item.image %>" alt="item">
-            <% } %>
-            <h4><%= item.nama_barang %></h4>
-            <p><small><%= item.kode_unit %></small></p>
-            
-            <div style="margin: 15px 0;">
-                <% if(item.status === 'tersedia') { %>
-                    <span class="badge bg-success">Tersedia</span>
-                <% } else { %>
-                    <span class="badge bg-danger">Dipinjam</span>
-                <% } %>
-            </div>
+<div class="catalog-header animate-in">
+    <h2>Katalog Barang</h2>
+    <div class="search-box">
+        <input type="text" id="searchItems" placeholder="Cari barang..." onkeyup="filterItems()">
+    </div>
+</div>
 
-            <% if(item.status === 'tersedia') { %>
-                <form action="/loan/<%= item.kode_unit %>" method="POST">
-                    <button class="btn-pinjam">Request Pinjam</button>
-                </form>
-            <% } else { %>
-                <button class="btn-pinjam" disabled>Tidak Tersedia</button>
-            <% } %>
+<div class="items-grid" id="itemsGrid">
+    <% items.forEach(item => { %>
+        <div class="item-card animate-in" data-name="<%= item.nama_barang.toLowerCase() %>">
+            <div class="item-image">
+                <% if(item.image) { %>
+                    <img src="/uploads/<%= item.image %>" alt="<%= item.nama_barang %>">
+                <% } else { %>
+                    <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); display: flex; align-items: center; justify-content: center; color: #444; font-size: 3rem;">📦</div>
+                <% } %>
+                <div class="item-status">
+                    <% if(item.status === 'tersedia') { %>
+                        <span class="badge badge-success">Tersedia</span>
+                    <% } else { %>
+                        <span class="badge badge-danger">Dipinjam</span>
+                    <% } %>
+                </div>
+            </div>
+            <div class="item-content">
+                <h4><%= item.nama_barang %></h4>
+                <div class="item-code"><%= item.kode_unit %></div>
+                <div class="item-footer">
+                    <% if(item.status === 'tersedia') { %>
+                        <form action="/loan/<%= item.kode_unit %>" method="POST" style="flex: 1;">
+                            <button class="btn-borrow">Pinjam Barang</button>
+                        </form>
+                    <% } else { %>
+                        <button class="btn-borrow" disabled>Tidak Tersedia</button>
+                    <% } %>
+                </div>
+            </div>
         </div>
     <% }) %>
 </div>
+
+<% if(items.length === 0) { %>
+<div class="empty-state animate-in">
+    <div class="empty-state-icon">📭</div>
+    <h3>Tidak Ada Barang</h3>
+    <p>Belum ada barang yang tersedia di katalog.</p>
+</div>
+<% } %>
+
+<script>
+    function filterItems() {
+        const search = document.getElementById('searchItems').value.toLowerCase();
+        const cards = document.querySelectorAll('.item-card');
+        
+        cards.forEach(card => {
+            const name = card.getAttribute('data-name');
+            card.style.display = name.includes(search) ? 'block' : 'none';
+        });
+    }
+</script>

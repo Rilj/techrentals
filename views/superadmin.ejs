@@ -1,132 +1,424 @@
 <style>
+    .super-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, rgba(255,0,0,0.2) 0%, rgba(139,0,0,0.2) 100%);
+        border: 1px solid var(--primary);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        color: var(--primary);
+        font-weight: 700;
+        margin-bottom: 24px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
     .super-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 30px;
-        margin-bottom: 40px;
+        gap: 24px;
+        margin-bottom: 32px;
     }
 
-    /* Style khusus untuk upload file */
-    .custom-file-upload {
-        border: 2px dashed var(--primary);
-        padding: 20px;
-        text-align: center;
-        border-radius: 10px;
-        margin-bottom: 15px;
-        cursor: pointer;
-        background: #0f0f0f;
-    }
-    .custom-file-upload:hover { background: #1a0000; }
-
-    .item-list-mini {
-        max-height: 500px;
-        overflow-y: auto;
-    }
-
-    .list-item-row {
+    .form-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 24px;
         display: flex;
         align-items: center;
-        padding: 10px;
-        border-bottom: 1px solid #222;
-        gap: 15px;
+        gap: 10px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border);
     }
-    .list-item-row img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; }
-    .list-item-row .info { flex: 1; }
-    .list-item-row .info h5 { margin: 0; font-size: 1rem; }
-    .list-item-row .info p { margin: 0; font-size: 0.8rem; color: #777; }
+
+    .file-upload {
+        border: 2px dashed var(--border);
+        border-radius: 12px;
+        padding: 32px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #0f0f0f;
+    }
+
+    .file-upload:hover {
+        border-color: var(--primary);
+        background: rgba(255, 0, 0, 0.05);
+    }
+
+    .file-upload-icon {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+    }
+
+    .file-upload-text {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .file-upload input {
+        display: none;
+    }
+
+    .list-container {
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 8px;
+    }
+
+    .list-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .list-container::-webkit-scrollbar-track {
+        background: #0f0f0f;
+        border-radius: 3px;
+    }
+
+    .list-container::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 3px;
+    }
+
+    .list-item {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 16px;
+        border-bottom: 1px solid var(--border);
+        transition: background 0.3s ease;
+    }
+
+    .list-item:hover {
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .list-item:last-child {
+        border-bottom: none;
+    }
+
+    .item-thumb {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        object-fit: cover;
+        background: #222;
+    }
+
+    .item-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        background: var(--gradient-red);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .list-info {
+        flex: 1;
+    }
+
+    .list-info h5 {
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .list-info p {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin: 0;
+    }
+
+    .status-pill {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .status-available {
+        background: rgba(0, 208, 132, 0.15);
+        color: var(--success);
+    }
+
+    .status-borrowed {
+        background: rgba(255, 71, 87, 0.15);
+        color: var(--danger);
+    }
+    .export-section {
+        margin-top: 32px;
+    }
+    
+    .export-card {
+        background: linear-gradient(135deg, rgba(255,0,0,0.05) 0%, rgba(139,0,0,0.05) 100%);
+        border: 1px solid rgba(255,0,0,0.2);
+    }
+
+    .export-filters {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr) auto;
+        gap: 16px;
+        align-items: end;
+        margin-bottom: 20px;
+    }
+
+    .export-buttons {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn-excel {
+        background: #217346;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-excel:hover {
+        background: #1e623d;
+        transform: translateY(-2px);
+    }
+
+    .btn-csv {
+        background: #f4f4f4;
+        color: #333;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        border: 1px solid #ddd;
+        cursor: pointer;
+    }
+
+    .btn-csv:hover {
+        background: #e8e8e8;
+    }
+
+    @media (max-width: 1024px) {
+        .super-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    @media (max-width: 768px) {
+        .export-filters {
+            grid-template-columns: 1fr;
+        }
+        
+        .export-buttons {
+            flex-direction: column;
+        }
+    }
 </style>
 
-<div class="dashboard-header">
-    <h1 style="color: var(--primary);">Superadmin Command Center</h1>
-    <p>Otoritas penuh untuk manajemen Admin dan Inventaris Barang.</p>
+<div class="dashboard-header animate-in">
+    <div class="super-badge">
+        <span>⚡</span> Superadmin Access
+    </div>
+    <h1>Command Center</h1>
+    <p>Manajemen penuh sistem dan otoritas tertinggi</p>
 </div>
 
-<div class="super-grid">
-    <div class="card">
-        <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px;">📦 Management Inventaris</h3>
+<div class="super-grid animate-in">
+    <!-- Inventory Management -->
+    <div class="card form-card">
+        <h3><span>📦</span> Tambah Barang Baru</h3>
         <form action="/admin/add" method="POST" enctype="multipart/form-data">
             <div class="form-group">
-                <label>NAMA BARANG</label>
-                <input type="text" name="nama_barang" placeholder="Masukkan nama barang..." required>
+                <label>Nama Barang</label>
+                <input type="text" name="nama_barang" class="form-control" placeholder="Masukkan nama barang..." required>
             </div>
             <div class="form-group">
-                <label>JUMLAH UNIT</label>
-                <input type="number" name="jumlah" min="1" value="1" required>
+                <label>Jumlah Unit</label>
+                <input type="number" name="jumlah" min="1" value="1" class="form-control" required>
             </div>
-            <label style="font-size: 0.8rem; color: #ccc;">FOTO BARANG</label>
-            <div class="custom-file-upload" onclick="document.getElementById('image').click()">
-                <span id="file-name">Klik untuk pilih gambar (JPG/PNG)</span>
-                <input type="file" id="image" name="image" accept="image/*" style="display: none;" onchange="updateFileName(this)">
+            <div class="form-group">
+                <label>Foto Barang</label>
+                <div class="file-upload" onclick="document.getElementById('image').click()">
+                    <div class="file-upload-icon">📷</div>
+                    <div class="file-upload-text" id="fileName">Klik untuk upload gambar (JPG/PNG)</div>
+                    <input type="file" id="image" name="image" accept="image/*" onchange="updateFileName(this)">
+                </div>
             </div>
-            <button type="submit" class="logout-btn" style="width: 100%; border: none;">+ Simpan ke Gudang</button>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <span>+</span> Simpan ke Inventaris
+            </button>
         </form>
     </div>
 
-    <div class="card">
-        <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px;">🛡️ Registrasi Admin</h3>
+    <!-- Admin Registration -->
+    <div class="card form-card">
+        <h3><span>🛡️</span> Registrasi Admin</h3>
         <form method="POST" action="/superadmin/add-admin">
             <div class="form-group">
-                <label>NAMA LENGKAP</label>
-                <input type="text" name="name" placeholder="Nama admin baru" required>
+                <label>Nama Lengkap</label>
+                <input type="text" name="name" class="form-control" placeholder="Nama admin baru" required>
             </div>
             <div class="form-group">
-                <label>EMAIL OPERASIONAL</label>
-                <input type="email" name="email" placeholder="admin@sarpratech.com" required>
+                <label>Email Operasional</label>
+                <input type="email" name="email" class="form-control" placeholder="admin@sarpratech.com" required>
             </div>
             <div class="form-group">
-                <label>ACCESS PASSWORD</label>
-                <input type="password" name="password" placeholder="Min. 8 karakter" required>
+                <label>Access Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Minimal 8 karakter" required>
             </div>
-            <button class="btn-approve" style="width: 100%; padding: 12px; font-size: 1rem;">Aktifkan Akun Admin</button>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <span>⚡</span> Aktifkan Akun Admin
+            </button>
         </form>
     </div>
 </div>
 
-<div class="super-grid">
+<div class="super-grid animate-in">
+    <!-- Active Admins -->
     <div class="card">
-        <h3 style="color: var(--primary);">Daftar Admin Aktif</h3>
-        <div class="item-list-mini">
-            <% admins.forEach(admin => { %>
-                <div class="list-item-row">
-                    <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
-                        <%= admin.name.charAt(0).toUpperCase() %>
-                    </div>
-                    <div class="info">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+            <h3 style="margin: 0; font-size: 1.1rem;">Admin Aktif</h3>
+            <span class="badge badge-info"><%= admins.length %> User</span>
+        </div>
+        <div class="list-container">
+            <% if(admins.length > 0) { %>
+                <% admins.forEach(admin => { %>
+                <div class="list-item">
+                    <div class="item-icon"><%= admin.name.charAt(0).toUpperCase() %></div>
+                    <div class="list-info">
                         <h5><%= admin.name %></h5>
                         <p><%= admin.email %></p>
                     </div>
-                    <span class="status-text" style="color: #28a745;">ACTIVE</span>
+                    <span class="status-pill status-available">Aktif</span>
                 </div>
-            <% }) %>
+                <% }) %>
+            <% } else { %>
+                <div class="empty-state" style="padding: 40px;">
+                    <p>Belum ada admin terdaftar</p>
+                </div>
+            <% } %>
         </div>
     </div>
 
+    <!-- Current Inventory -->
     <div class="card">
-        <h3>Inventaris Saat Ini</h3>
-        <div class="item-list-mini">
-            <% items.forEach(item => { %>
-                <div class="list-item-row">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+            <h3 style="margin: 0; font-size: 1.1rem;">Inventaris Saat Ini</h3>
+            <span class="badge badge-info"><%= items.length %> Item</span>
+        </div>
+        <div class="list-container">
+            <% if(items.length > 0) { %>
+                <% items.forEach(item => { %>
+                <div class="list-item">
                     <% if(item.image) { %>
-                        <img src="/uploads/<%= item.image %>">
+                        <img src="/uploads/<%= item.image %>" class="item-thumb" alt="">
                     <% } else { %>
-                        <div style="width: 50px; height: 50px; background: #333; border-radius: 8px;"></div>
+                        <div class="item-icon" style="width: 50px; height: 50px; font-size: 1.2rem;">📦</div>
                     <% } %>
-                    <div class="info">
+                    <div class="list-info">
                         <h5><%= item.nama_barang %></h5>
-                        <p>ID: <%= item.kode_unit %></p>
+                        <p><%= item.kode_unit %></p>
                     </div>
-                    <span class="status-text" style="color: <%= item.status === 'tersedia' ? '#28a745' : '#dc3545' %>">
-                        <%= item.status.toUpperCase() %>
+                    <span class="status-pill <%= item.status === 'tersedia' ? 'status-available' : 'status-borrowed' %>">
+                        <%= item.status %>
                     </span>
                 </div>
-            <% }) %>
+                <% }) %>
+            <% } else { %>
+                <div class="empty-state" style="padding: 40px;">
+                    <p>Inventaris kosong</p>
+                </div>
+            <% } %>
         </div>
     </div>
 </div>
+<div class="super-grid export-section animate-in">
+    <div class="card export-card" style="grid-column: 1 / -1;">
+        <h3 style="margin-bottom: 20px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
+            <span>📊</span> Export Data Peminjaman
+        </h3>
+        
+        <form id="exportForm">
+            <div class="export-filters">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Status Peminjaman</label>
+                    <select name="status" class="form-control" id="filterStatus">
+                        <option value="">Semua Status</option>
+                        <option value="pending">Menunggu</option>
+                        <option value="borrowed">Dipinjam</option>
+                        <option value="return_requested">Pengembalian Diajukan</option>
+                        <option value="returned">Sudah Kembali</option>
+                        <option value="rejected">Ditolak</option>
+                    </select>
+                </div>
 
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Tanggal Mulai</label>
+                    <input type="date" name="startDate" class="form-control" id="filterStartDate">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Tanggal Selesai</label>
+                    <input type="date" name="endDate" class="form-control" id="filterEndDate">
+                </div>
+
+                <div class="export-buttons">
+                    <button type="button" class="btn-excel" onclick="exportData('excel')">
+                        <span>📗</span> Excel
+                    </button>
+                    <button type="button" class="btn-csv" onclick="exportData('csv')">
+                        <span>📄</span> CSV
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+            <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0;">
+                💡 Tips: Kosongkan tanggal untuk mengexport semua data. Format Excel lebih cocok untuk analisis, CSV untuk kompatibilitas universal.
+            </p>
+        </div>
+    </div>
+</div>
 <script>
     function updateFileName(input) {
-        const fileName = input.files[0] ? input.files[0].name : "Klik untuk pilih gambar (JPG/PNG)";
-        document.getElementById('file-name').innerText = fileName;
+        const fileName = input.files[0] ? input.files[0].name : "Klik untuk upload gambar (JPG/PNG)";
+        document.getElementById('fileName').innerText = fileName;
+    }
+    function updateFileName(input) {
+        const fileName = input.files[0] ? input.files[0].name : "Klik untuk upload gambar (JPG/PNG)";
+        document.getElementById('fileName').innerText = fileName;
+    }
+
+    // Fungsi baru untuk export
+    function exportData(format) {
+        const status = document.getElementById('filterStatus').value;
+        const startDate = document.getElementById('filterStartDate').value;
+        const endDate = document.getElementById('filterEndDate').value;
+
+        // Build query string
+        const params = new URLSearchParams();
+        if (status) params.append('status', status);
+        if (startDate) params.append('startDate', startDate);
+        if (endDate) params.append('endDate', endDate);
+
+        const url = `/admin/export/${format}?${params.toString()}`;
+        
+        // Open download in new tab/window
+        window.location.href = url;
     }
 </script>

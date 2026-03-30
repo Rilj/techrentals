@@ -1,70 +1,193 @@
 <style>
-    h3{
-        margin-left: 2%;
-        font-size: 2vw;
+    .welcome-section {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 32px;
+        margin-bottom: 32px;
+        position: relative;
+        overflow: hidden;
     }
-    p{
-      font-size: 1vw;
-      margin-left: 2%;
+
+    .welcome-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(255,0,0,0.1) 0%, transparent 70%);
+        pointer-events: none;
     }
-    .btn{
-      margin-left: 2%;
-      padding: 0.4%;
-      background: #000000;
-      border: #ffffff 0.1em solid;
-      color: #ffffff;
-      border-radius: 10px;
-      text-decoration: none;
+
+    .welcome-section h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .welcome-section h2 span {
+        color: var(--primary);
+    }
+
+    .welcome-section p {
+        color: var(--text-secondary);
+        margin-bottom: 24px;
+    }
+
+    .quick-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .loans-section {
+        margin-top: 40px;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .section-header h3 {
+        font-size: 1.3rem;
+        font-weight: 700;
+    }
+
+    .loan-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-return {
+        background: transparent;
+        border: 1px solid var(--warning);
+        color: var(--warning);
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-return:hover {
+        background: var(--warning);
+        color: #000;
+    }
+
+    .empty-loans {
+        text-align: center;
+        padding: 60px;
+        color: var(--text-secondary);
+    }
+
+    .empty-loans-icon {
+        font-size: 4rem;
+        margin-bottom: 16px;
+        opacity: 0.3;
+    }
+
+    @media (max-width: 768px) {
+        .quick-actions {
+            flex-direction: column;
+        }
+        
+        .quick-actions .btn {
+            width: 100%;
+        }
     }
 </style>
-<h3>Dashboard</h3>
 
-<p>Selamat datang, <b><%= user.name %></b>. ada yang mau dipinjam?</p>
+<div class="dashboard-header animate-in">
+    <h1>Dashboard</h1>
+    <p>Kelola peminjaman dan lihat status barang Anda</p>
+</div>
 
-<a class="btn"href="/items" class="btn btn-primary">Lihat Barang yang mau dipinjam</a>
-
-<% if(user.role === 'superadmin'){ %>
-  <a class="btn" href="/superadmin" class="btn btn-dark">Dashboard Superadmin</a>
-<% } %>
-
-<% if(user.role === 'admin'){ %>
-  <a class="btn" href="/admin/dashboard" class="btn btn-dark">Dashboard admin</a>
-<% } %>
+<div class="welcome-section animate-in">
+    <h2>Selamat datang, <span><%= user.name %></span>! 👋</h2>
+    <p>Siap meminjam peralatan teknologi untuk kebutuhan Anda?</p>
+    
+    <div class="quick-actions">
+        <a href="/items" class="btn btn-primary">
+            <span>📦</span> Lihat Barang Tersedia
+        </a>
+        <% if(user.role === 'superadmin'){ %>
+            <a href="/superadmin" class="btn btn-secondary">
+                <span>⚡</span> Panel Superadmin
+            </a>
+        <% } %>
+        <% if(user.role === 'admin'){ %>
+            <a href="/admin/dashboard" class="btn btn-secondary">
+                <span>🛡️</span> Panel Admin
+            </a>
+        <% } %>
+        <a href="/my-loans" class="btn btn-secondary">
+            <span>📋</span> Peminjaman Saya
+        </a>
+    </div>
+</div>
 
 <% if(user.role === 'user'){ %>
-  
-<h3>Barang yang Sedang Dipinjam</h3>
-
-<table class="tabel table table-bordered">
-    <thead class="table-dark">
-        <tr>
-            <th>Nama Barang</th>
-            <th>Tanggal Pinjam</th>
-            <th>Tagihan</th>
-            <th>Total Biaya</th>
-        </tr>
-    </thead>
-    <tbody>
-    <% loans.forEach(loan => { %>
-    <tr >
-        <td><%= loan.Item.nama_barang %></td>
-        <td><%= loan.days %> hari</td>
-        <td>Rp <%= loan.total.toLocaleString() %></td>
-        <td>
-        <% if(loan.status === 'borrowed') { %>
-            <form action="/loan/return/<%= loan.id %>" method="POST">
-                <button class="btn btn-warning btn-sm">
-                    Request Pengembalian
-                </button>
-            </form>
-        <% } else if(loan.status === 'return_requested') { %>
-            <span class="badge bg-info">
-                Menunggu Konfirmasi Admin
-            </span>
+<div class="loans-section animate-in">
+    <div class="section-header">
+        <h3>Barang yang Sedang Dipinjam</h3>
+        <a href="/my-loans" style="color: var(--primary); text-decoration: none; font-size: 0.9rem;">Lihat Semua →</a>
+    </div>
+    
+    <div class="card" style="padding: 0; overflow: hidden;">
+        <% if(loans && loans.length > 0) { %>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Nama Barang</th>
+                    <th>Durasi</th>
+                    <th>Total Biaya</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% loans.slice(0, 5).forEach(loan => { %>
+                <tr>
+                    <td>
+                        <strong style="color: var(--text-primary);"><%= loan.Item.nama_barang %></strong>
+                        <div style="font-size: 0.8rem; color: #666; margin-top: 4px;"><%= loan.Item.kode_unit %></div>
+                    </td>
+                    <td><%= loan.days %> hari</td>
+                    <td style="font-weight: 600;">Rp <%= loan.total.toLocaleString() %></td>
+                    <td>
+                        <% if(loan.status === 'borrowed') { %>
+                            <span class="badge badge-warning">Dipinjam</span>
+                        <% } else if(loan.status === 'return_requested') { %>
+                            <span class="badge badge-info">Pengembalian Diajukan</span>
+                        <% } %>
+                    </td>
+                    <td>
+                        <% if(loan.status === 'borrowed') { %>
+                            <form action="/loan/return/<%= loan.id %>" method="POST" style="display: inline;">
+                                <button class="btn-return">Ajukan Kembali</button>
+                            </form>
+                        <% } else { %>
+                            <span style="color: var(--text-secondary); font-size: 0.85rem;">Menunggu konfirmasi...</span>
+                        <% } %>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        <% } else { %>
+        <div class="empty-loans">
+            <div class="empty-loans-icon">📭</div>
+            <h4>Belum Ada Peminjaman</h4>
+            <p>Anda belum meminjam barang apapun. Jelajahi katalog barang untuk memulai.</p>
+            <a href="/items" class="btn btn-primary" style="margin-top: 16px;">Jelajahi Barang</a>
+        </div>
         <% } %>
-    </td>
-    </tr>
-    <% }) %>
-    </tbody>
-</table>
+    </div>
+</div>
 <% } %>

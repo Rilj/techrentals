@@ -47,40 +47,6 @@ multer (file upload)
 cors
 dotenv
 
-📂 Project Structure
-sistem-peminjaman
-│
-├── config
-│   └── database.js
-│
-├── models
-│   ├── User.js
-│   ├── Item.js
-│   └── Loan.js
-│
-├── routes
-│   ├── authRoutes.js
-│   ├── itemRoutes.js
-│   ├── loanRoutes.js
-│   └── adminRoutes.js
-│
-├── middleware
-│   ├── authMiddleware.js
-│   └── roleMiddleware.js
-│
-├── views
-│   ├── login.ejs
-│   ├── dashboard.ejs
-│   ├── admin_dashboard.ejs
-│   └── layout.ejs
-│
-├── public
-│   └── uploads
-│
-├── server.js
-├── package.json
-└── README.md
-
 ⚙️ Installation
 1️⃣ Clone Repository
 git clone https://github.com/yourusername/sistem-peminjaman.git
@@ -91,6 +57,8 @@ npm install
 npm install multer
 npm install express mysql2 sequelize bcryptjs jsonwebtoken dotenv cors
 npm install nodemon --save-dev
+npm install xlsx json2csv
+npm install dotenv
 
 3️⃣ Configure Environment Variables
 
@@ -115,19 +83,52 @@ Email: superadmin@gmail.com
 Password: 123456
 🗄 Database
 
-The system uses Sequelize ORM, so tables are automatically created when the server runs.
+CREATE DATABASE peminjaman_komputer;
 
-Tables:
+CREATE TABLE Users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255),
+  email VARCHAR(255) UNIQUE,
+  password VARCHAR(255),
+  role ENUM('superadmin', 'admin', 'user') DEFAULT 'user',
+  createdAt DATETIME NOT NULL,
+  updatedAt DATETIME NOT NULL
+);
 
-Users
+CREATE TABLE Items (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nama_barang VARCHAR(255) NOT NULL,
+  kode_unit VARCHAR(255) UNIQUE NOT NULL,
+  image VARCHAR(255),
+  status ENUM('tersedia', 'dibooking', 'dipinjam') DEFAULT 'tersedia',
+  createdAt DATETIME NOT NULL,
+  updatedAt DATETIME NOT NULL
+);
 
-Items
+CREATE TABLE Loans (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  startDate DATETIME,
+  endDate DATETIME,
+  totalPrice INT DEFAULT 0,
+  fine INT DEFAULT 0,
+  status ENUM(
+    'pending',
+    'borrowed',
+    'return_requested',
+    'returned',
+    'rejected'
+  ) DEFAULT 'pending',
+  UserId INT,
+  ItemId INT,
+  createdAt DATETIME NOT NULL,
+  updatedAt DATETIME NOT NULL,
 
-Loans
+  FOREIGN KEY (UserId) REFERENCES Users(id)
+    ON DELETE SET NULL ON UPDATE CASCADE,
 
-📸 Screenshots
-
-You can add screenshots here later.
+  FOREIGN KEY (ItemId) REFERENCES Items(id)
+    ON DELETE SET NULL ON UPDATE CASCADE
+);
 
 Example:
 
