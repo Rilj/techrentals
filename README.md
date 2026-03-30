@@ -49,10 +49,12 @@ dotenv
 
 ⚙️ Installation
 1️⃣ Clone Repository
+
 git clone https://github.com/yourusername/sistem-peminjaman.git
 cd sistem-peminjaman
 
 2️⃣ Install Dependencies
+
 npm install
 npm install multer
 npm install express mysql2 sequelize bcryptjs jsonwebtoken dotenv cors
