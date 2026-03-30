@@ -49,30 +49,30 @@ dotenv
 
 ⚙️ Installation
 1️⃣ Clone Repository
-'''
+```
 git clone https://github.com/yourusername/sistem-peminjaman.git
 cd sistem-peminjaman
-'''
+```
 
 2️⃣ Install Dependencies
-'''
+```
 npm install
 npm install multer
 npm install express mysql2 sequelize bcryptjs jsonwebtoken dotenv cors
 npm install nodemon --save-dev
 npm install xlsx json2csv
 npm install dotenv
-'''
+```
 3️⃣ Configure Environment Variables
 
 Create a .env file:
-'''
+```
 DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=
 DB_NAME=peminjaman_komputer
 SESSION_SECRET=secret123
-'''
+```
 4️⃣ Run the Server
 npm start
 
@@ -86,7 +86,7 @@ The system automatically creates a super admin account:
 Email: superadmin@gmail.com
 Password: 123456
 🗄 Database
-'''
+```
 CREATE DATABASE peminjaman_komputer;
 
 CREATE TABLE Users (
@@ -133,7 +133,7 @@ CREATE TABLE Loans (
   FOREIGN KEY (ItemId) REFERENCES Items(id)
     ON DELETE SET NULL ON UPDATE CASCADE
 );
-'''
+```
 Example:
 
 Login Page
